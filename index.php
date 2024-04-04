@@ -23,7 +23,7 @@ if (isset($_GET['search'])) {
 
 if (isset($_GET['delete'])) {
     $delete_id = $_GET['delete'];
-    $deletestmt = $conn->query("DELETE FROM ingredient WHERE id = $delete_id");
+    $deletestmt = $conn->query("DELETE FROM ingredient WHERE ingredientID = $delete_id");
     $deletestmt->execute();
 
     if ($deletestmt) {
@@ -83,6 +83,75 @@ if (isset($_GET['delete'])) {
                 </div>
                 <div class="modal-body">
                     <form action="insert.php" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="category" class="col-form-label">Category</label>
+                            <select class="form-select" id="categorySelect" aria-label="Floating label select example"
+                                name="category" required>
+                                <?php
+                                $units = $conn->query("SELECT * FROM ingredient_category");
+                                $units->execute();
+                                $category = $units->fetchAll();
+
+                                foreach ($category as $c) {
+                                    ?>
+                                    <option name="selectcate" value="<?php echo $c['IngredientC_ID'] ?>">
+                                        <?php echo $c['IngredientType'] ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subscategory" class="col-form-label">Sub Category</label>
+                            <select class="form-select" id="floatingSelect" aria-label="Floating label select example"
+                                name="subscategory" required>
+                                <?php
+                                $subcategories = $conn->prepare("SELECT * FROM ingredient_subcategory");
+                                $subcategories->execute();
+                                $subcategory = $subcategories->fetchAll();
+
+                                foreach ($subcategory as $s) {
+                                    ?>
+                                    <option value="<?php echo $s['SubsCategoryID'] ?>">
+                                        <?php echo $s['SubsCategory'] ?>
+                                    </option>
+                                    <?php
+                                }
+
+                                ?>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="unit" class="col-form-label">Unit</label>
+                            <select class="form-select" aria-label="Floating label select example" name="unit" required>
+                                <?php
+                                $units = $conn->query("SELECT * FROM unitmeasure");
+                                $units->execute();
+                                $unitmeasure = $units->fetchAll();
+
+                                foreach ($unitmeasure as $u) {
+                                    ?>
+                                    <option name="selectcate" value="<?php echo $u['Unit_ID'] ?>">
+                                        <?php echo $u['Unit_Name'] ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" name="Name" placeholder="Input Name" required>
+                            <label for="Name" class="col-form-label">Ingredient Name</label>
+                        </div>
+                        <div class="form-floating">
+                            <input type="text" class="form-control" name="flavor" placeholder="Input flavor" required>
+                            <label for="flavor" class="col-form-label">Flavor</label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="Allergic" class="col-form-label">isAllergic?</label>
+                            <select class="form-select" id="floatingSelect" aria-label="Floating label select example"
+                                name="Allergic" required>
+                                <option selected value="0">No</option>
+                                <option value="1">Yes</option>
+                            </select>
+                        </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="submit" name="submit" class="btn btn-primary">Submit</button>
@@ -174,10 +243,7 @@ if (isset($_GET['delete'])) {
                                 <?= $ing['SubsCategoryID']; ?>
                             </td>
                             <td>
-                                <?= $ing['unitM_ID']; ?>
-                            </td>
-                            <td>
-                                <?= $ing['NutrientID']; ?>
+                                <?= $ing['Unit_ID']; ?>
                             </td>
                             <td>
                                 <?= $ing['ingredientName']; ?>
@@ -188,9 +254,10 @@ if (isset($_GET['delete'])) {
                             <td>
                                 <?= $ing['isAllergic']; ?>
                             </td>
-                            <a href="edit.php?id=<?php echo $user['id']; ?>" class="btn btn-warning">Edit</a>
+                            <td>
+                            <a href="edit.php?id=<?php echo $ing['ingredientID']; ?>" class="btn btn-warning">Edit</a>
                             <a onclick="return confirm('Are you sure you want to delete?');"
-                                href="?delete=<?php echo $user['id']; ?>" class="btn btn-danger">Delete</a>
+                                href="?delete=<?php echo $ing['ingredientID']; ?>" class="btn btn-danger">Delete</a>
                             </td>
                         </tr>
                     <?php }

@@ -55,8 +55,8 @@ if (isset($_POST['submit'])) {
                     <?php
                     $stmt = $conn->query("SELECT * FROM ingredient_Category");
                     $stmt->execute();
-                    $categories = $stmt->fetchAll();
-                    foreach ($categories as $c) {
+                    $units = $stmt->fetchAll();
+                    foreach ($units as $c) {
                         ?>
                         <option value="<?php echo $c['IngredientC_ID'] ?>">
                             <?php echo $c['IngredientType'] ?>
